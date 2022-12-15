@@ -17,7 +17,14 @@ onMounted(async() => {
         date_rdv,
         heure_rdv,
         clients!inner (
-          email_user
+          email_user,
+          first_name,
+          last_name,
+          address_latitude,
+          address_longitude,
+          address,
+          address_codepostal,
+          address_ville
         ),
         prestataires!inner (
           first_name,
@@ -27,7 +34,7 @@ onMounted(async() => {
       `)
       .eq('prestataires.email_user', user?.email)
 
-  rdv?.forEach(element => console.log(element.date_rdv))
+
 
   console.log(rdv)
 
@@ -37,9 +44,13 @@ onMounted(async() => {
 
   macarte = L.map('map').setView([lat, lon], 11)
   L.tileLayer('https://{s}.tile.openstreetmap.fr/osmfr/{z}/{x}/{y}.png').addTo(macarte)
-  let marker = L.marker([45.750165,4.749065]).addTo(macarte)
-              .bindPopup('Mon adresse')
-              .openPopup()
+  rdv?.forEach(function(element){
+    let marker = L.marker([element.clients.address_latitude, element.clients.address_longitude]).addTo(macarte)
+    marker.bindPopup(
+        'Adresse de ' + element.clients.first_name + ' ' + element.clients.last_name + ' : <br>' +
+                element.clients.address + ' ' + element.clients.address_codepostal + ' ' + element.clients.address_ville
+    )
+  })
   L.control.locate().addTo(macarte);
 
 })
